@@ -1,24 +1,33 @@
 ﻿using GESTOR_TORNEOS.src.Shared.Helpers;
 using GESTOR_TORNEOS.src.Modules.MainMenu;
+using GESTOR_TORNEOS.src.Shared.Context;
 
 namespace GESTOR_TORNEOS;
 
 class Program 
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         try
         {
-            var dbContext = DbContextFactory.Create();
+            // Crear el contexto de Entity Framework
+            var dbContext = DbContextFactory.Create() as AppDbContext;
+            
+            if (dbContext == null)
+            {
+                throw new InvalidOperationException("No se pudo crear el contexto de base de datos");
+            }
 
-            var MainMenu = new MainMenu(dbContext);
-            MainMenu.Show();
+            // Crear y mostrar el menú principal
+            var mainMenu = new MainMenu(dbContext);
+            await mainMenu.Show();
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine("Presione cualquier tecla para salir...");
+            Console.ReadKey();
         }
-        
     }
 }
 
