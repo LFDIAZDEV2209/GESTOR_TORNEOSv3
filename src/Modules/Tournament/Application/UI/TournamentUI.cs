@@ -44,7 +44,7 @@ public class TournamentUI : ITournamentUI
                     break;
                 case '1':
                     Console.Clear();
-                    AnsiConsole.MarkupLine("[yellow]Opción no implementada[/]");
+                    await ShowListTournaments();
                     break;
                 case '2':
                     Console.Clear();
@@ -71,9 +71,9 @@ public class TournamentUI : ITournamentUI
             .Centered()
             .Color(Color.Yellow));
 
-        var name = AnsiConsole.Ask<string>("[yellow]Nombre del torneo:[/]");
-        var startDate = AnsiConsole.Ask<DateTime>("[yellow]Fecha de inicio:[/]");
-        var endDate = AnsiConsole.Ask<DateTime>("[yellow]Fecha de fin:[/]");
+        var name = AnsiConsole.Ask<string>("[blue]Nombre del torneo:[/]");
+        var startDate = AnsiConsole.Ask<DateTime>("[blue]Fecha de inicio:[/]");
+        var endDate = AnsiConsole.Ask<DateTime>("[blue]Fecha de fin:[/]");
         var tournament = new Tournament(name, startDate, endDate);
         
         try
@@ -84,15 +84,6 @@ public class TournamentUI : ITournamentUI
         catch (Exception ex)
         {
             AnsiConsole.MarkupLine($"[red]Error al crear el torneo: {ex.Message}[/]");
-            
-            // Mostrar más detalles del error interno
-            if (ex.InnerException != null)
-            {
-                AnsiConsole.MarkupLine($"[red]Detalles internos: {ex.InnerException.Message}[/]");
-            }
-            
-            // Mostrar el stack trace para debugging
-            AnsiConsole.MarkupLine($"[yellow]Stack trace: {ex.StackTrace}[/]");
         }
         
         AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
@@ -101,7 +92,90 @@ public class TournamentUI : ITournamentUI
 
     public async Task ShowListTournaments()
     {
-        throw new NotImplementedException();
+        while (true)
+        {
+            Console.Clear();
+            AnsiConsole.Write(
+            new FigletText("Lista de Torneos")
+            .Centered()
+            .Color(Color.Yellow));
+        
+            var selection = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                .Title("Como desea buscar el torneo?")
+                .AddChoices(new[]
+                {
+                    "1. Por ID",
+                    "2. Mostrar todos",
+                    "3. Regresar al menu principal"
+                })
+            );
+
+            switch (selection[0])
+            {
+                case '1':
+                    var id = AnsiConsole.Ask<int>("[blue]ID del torneo:[/]");
+                    try
+                    {
+                        var tournament = await _tournamentService.GetTournamentByIdAsync(id);
+
+                        if (tournament == null)
+                        {
+                            AnsiConsole.MarkupLine("[red]Torneo no encontrado[/]");
+                            break;
+                        }
+
+                        var table = new Table();
+                        table.AddColumn("ID");
+                        table.AddColumn("Nombre");
+                        table.AddColumn("Fecha de inicio");
+                        table.AddColumn("Fecha de fin");
+                        table.AddRow(tournament.Id.ToString(), tournament.Name, tournament.StartDate.Date.ToString("dd/MM/yyyy"), tournament.EndDate.Date.ToString("dd/MM/yyyy"));
+
+                        AnsiConsole.Write(table);
+                        AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+                        Console.ReadKey();
+                    }
+                    catch (Exception ex)
+                    {
+                        AnsiConsole.MarkupLine($"[red]Error al buscar el torneo: {ex.Message}[/]");
+                    }
+                    break;
+                case '2':
+                    try
+                    {
+                        var tournaments = await _tournamentService.GetAllTournamentsAsync();
+
+                        if (tournaments.Count() == 0)
+                        {
+                            AnsiConsole.MarkupLine("[red]No hay torneos registrados[/]");
+                            break;
+                        }
+
+                        var table = new Table();
+                        table.AddColumn("ID");
+                        table.AddColumn("Nombre");
+                        table.AddColumn("Fecha de inicio");
+                        table.AddColumn("Fecha de fin");
+
+                        foreach (var tournament in tournaments)
+                        {
+                            table.AddRow(tournament.Id.ToString(), tournament.Name, tournament.StartDate.Date.ToString("dd/MM/yyyy"), tournament.EndDate.Date.ToString("dd/MM/yyyy"));
+                        }
+
+                        AnsiConsole.Write(table);
+                        AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+                        Console.ReadKey();
+                    }
+                    catch (Exception ex)
+                    {
+                        AnsiConsole.MarkupLine($"[red]Error al mostrar la lista de torneos: {ex.Message}[/]");
+                    }
+                    break;
+                case '3':
+                    return;
+                }
+        }
     }
 
     public async Task ShowDeleteTournament()
