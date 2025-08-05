@@ -23,5 +23,17 @@ public class TournamentConfiguration : IEntityTypeConfiguration<Tournament>
         builder.Property(t => t.EndDate)
             .HasColumnName("end_date")
             .IsRequired();
+            
+        // Relación uno a muchos con TournamentTeam
+        builder.HasMany(t => t.TournamentTeams)
+            .WithOne(tt => tt.Tournament)
+            .HasForeignKey(tt => tt.TournamentId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        // Relación uno a muchos con Match
+        builder.HasMany(t => t.Matches)
+            .WithOne()
+            .HasForeignKey("tournament_id")
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

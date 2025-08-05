@@ -1,5 +1,3 @@
-// using GESTOR_TORNEOS.src.Modules.Team.Domain.Entities;
-
 namespace GESTOR_TORNEOS.src.Modules.Domain.Entities;
 
 public class Tournament
@@ -8,17 +6,25 @@ public class Tournament
     public string Name { get; set; } = string.Empty;
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    // public List<Team> Teams { get; set; }
+    
+    // Propiedades de navegación
+    public List<TournamentTeam> TournamentTeams { get; set; } = new();
+    public List<Match> Matches { get; set; } = new();
 
     public Tournament(string name, DateTime startDate, DateTime endDate)
     {
         Name = name;
         StartDate = startDate;
         EndDate = endDate;
-        // Teams = new List<Team>();
+        TournamentTeams = new List<TournamentTeam>();
+        Matches = new List<Match>();
     }
 
-    public Tournament() { }
+    public Tournament() 
+    {
+        TournamentTeams = new List<TournamentTeam>();
+        Matches = new List<Match>();
+    }
 
     public override string ToString()
     {
