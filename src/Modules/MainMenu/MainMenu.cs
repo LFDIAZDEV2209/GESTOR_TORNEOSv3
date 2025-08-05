@@ -13,6 +13,7 @@ public class MainMenu
 {
     private readonly AppDbContext _dbContext;
     private readonly ITournamentUI _tournamentUI;
+    private readonly ITeamUI _teamUI;
 
     public MainMenu(AppDbContext dbContext)
     {
@@ -20,12 +21,15 @@ public class MainMenu
         
         // Crear el repositorio usando Entity Framework
         var tournamentRepository = new TournamentRepository(_dbContext);
+        var teamRepository = new TeamRepository(_dbContext);
         
         // Crear el servicio
         var tournamentService = new TournamentService(tournamentRepository);
-        
+        var teamService = new TeamService(teamRepository);
+
         // Crear la UI
         _tournamentUI = new TournamentUI(tournamentService);
+        _teamUI = new TeamUI(teamService);
     }
 
     public async Task Show()
@@ -47,11 +51,13 @@ public class MainMenu
                 .AddChoices(new[]
                 {
                     "0. Gestión de Torneos",
-                    "1. Registro Equipos",
-                    "2. Registro Jugadores",
-                    "3. Transferencias (Compra, Préstamo)",
-                    "4. Estadísticas",
-                    "5. Partidos",
+                    "1. Gestión de Equipos",
+                    "2. Gestión de Jugadores",
+                    "3. Gestión de Cuerpo Técnico",
+                    "4. Gestión de Cuerpo Médico",
+                    "5. Gestión de Partidos",
+                    "6. Gestión de Estadísticas",
+                    "7. Gestión de Transferencias (Compra, Préstamo)",
                     "6. Salir"
                 }));
 
@@ -63,9 +69,7 @@ public class MainMenu
                     break;
                 case '1':
                     Console.Clear();
-                    AnsiConsole.MarkupLine("[yellow]Módulo de equipos en desarrollo...[/]");
-                    AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar...[/]");
-                    Console.ReadKey();
+                    await _teamUI.ShowMenu();
                     break;
                 case '2':
                     Console.Clear();
@@ -75,13 +79,13 @@ public class MainMenu
                     break;
                 case '3':
                     Console.Clear();
-                    AnsiConsole.MarkupLine("[yellow]Módulo de transferencias en desarrollo...[/]");
+                    AnsiConsole.MarkupLine("[yellow]Módulo de cuerpo técnico en desarrollo...[/]");
                     AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar...[/]");
                     Console.ReadKey();
                     break;
                 case '4':
                     Console.Clear();
-                    AnsiConsole.MarkupLine("[yellow]Módulo de estadísticas en desarrollo...[/]");
+                    AnsiConsole.MarkupLine("[yellow]Módulo de cuerpo médico en desarrollo...[/]");
                     AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar...[/]");
                     Console.ReadKey();
                     break;
@@ -89,9 +93,22 @@ public class MainMenu
                     Console.Clear();
                     AnsiConsole.MarkupLine("[yellow]Módulo de partidos en desarrollo...[/]");
                     AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar...[/]");
+                    AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar...[/]");
                     Console.ReadKey();
                     break;
                 case '6':
+                    Console.Clear();
+                    AnsiConsole.MarkupLine("[yellow]Módulo de estadísticas en desarrollo...[/]");
+                    AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar...[/]");
+                    Console.ReadKey();
+                    break;
+                case '7':
+                    Console.Clear();
+                    AnsiConsole.MarkupLine("[yellow]Módulo de transferencias en desarrollo...[/]");
+                    AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar...[/]");
+                    Console.ReadKey();
+                    break;
+                case '8':
                     Console.Clear();
                     AnsiConsole.MarkupLine("[red]Saliendo del programa...[/]");
                     return;

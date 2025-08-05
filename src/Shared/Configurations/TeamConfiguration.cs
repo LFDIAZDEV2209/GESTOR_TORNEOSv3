@@ -40,15 +40,15 @@ public class TeamConfiguration : IEntityTypeConfiguration<Team>
             .OnDelete(DeleteBehavior.Cascade);
         
         // Relación uno a muchos con Player
-        builder.HasMany(t => t.Players)
-            .WithOne()
-            .HasForeignKey("team_id")
-            .OnDelete(DeleteBehavior.SetNull);
+        // builder.HasMany(t => t.Players)
+        //     .WithOne()
+        //     .HasForeignKey("team_id")
+        //     .OnDelete(DeleteBehavior.SetNull);
         
         // Relación uno a muchos con Staff
-        builder.HasMany(t => t.Staff)
-            .WithOne()
-            .HasForeignKey("team_id")
-            .OnDelete(DeleteBehavior.SetNull);
+        // builder.HasMany(t => t.Staff)
+        //     .WithOne()
+        //     .HasForeignKey("team_id")
+        //     .OnDelete(DeleteBehavior.SetNull);
     }
 } 

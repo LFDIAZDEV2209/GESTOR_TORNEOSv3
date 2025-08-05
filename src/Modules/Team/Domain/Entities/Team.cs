@@ -11,8 +11,8 @@ public class Team
     // Propiedades de navegación
     public City? City { get; set; }
     public List<TournamentTeam> TournamentTeams { get; set; } = new();
-    public List<Player> Players { get; set; } = new();
-    public List<Staff> Staff { get; set; } = new();
+    // public List<Player> Players { get; set; } = new();
+    // public List<Staff> Staff { get; set; } = new();
     
     // Constructor
     public Team(string name, int? cityId = null)
@@ -20,8 +20,8 @@ public class Team
         Name = name;
         CityId = cityId ?? null;
         TournamentTeams = new List<TournamentTeam>();
-        Players = new List<Player>();
-        Staff = new List<Staff>();
+        // Players = new List<Player>();
+        // Staff = new List<Staff>();
     }
 
     public Team() { }

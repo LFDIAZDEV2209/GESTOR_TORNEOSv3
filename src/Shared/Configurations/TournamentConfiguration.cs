@@ -31,9 +31,9 @@ public class TournamentConfiguration : IEntityTypeConfiguration<Tournament>
             .OnDelete(DeleteBehavior.Cascade);
         
         // Relación uno a muchos con Match
-        builder.HasMany(t => t.Matches)
-            .WithOne()
-            .HasForeignKey("tournament_id")
-            .OnDelete(DeleteBehavior.Cascade);
+        // builder.HasMany(t => t.Matches)
+        //     .WithOne()
+        //     .HasForeignKey("tournament_id")
+        //     .OnDelete(DeleteBehavior.Cascade);
     }
 }
