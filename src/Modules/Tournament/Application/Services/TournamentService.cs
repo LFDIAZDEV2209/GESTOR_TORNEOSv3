@@ -36,7 +36,17 @@ public class TournamentService : ITournamentService
 
     public async Task UpdateTournamentAsync(Tournament tournament)
     {
-        _tournamentRepository.Update(tournament);
+        var existingTournament = await _tournamentRepository.GetByIdAsync(tournament.Id);
+        if (existingTournament == null)
+        {
+            throw new Exception("Tournament not found");
+        }
+
+        existingTournament.Name = tournament.Name;
+        existingTournament.StartDate = tournament.StartDate;
+        existingTournament.EndDate = tournament.EndDate;
+
+        _tournamentRepository.Update(existingTournament);
         await _tournamentRepository.SaveAsync();
     }
 }

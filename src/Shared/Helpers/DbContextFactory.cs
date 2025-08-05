@@ -9,7 +9,7 @@ public class DbContextFactory
     public static AppDbContext Create()
     {
         var config = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            .SetBasePath("C:\\Users\\ASUS\\Documents\\PIPEJ2\\C#\\projectsNet\\GESTOR_TORNEOSv3")
             .AddJsonFile("appsettings.json", optional: true)
             .Build();
 

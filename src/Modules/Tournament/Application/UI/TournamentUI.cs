@@ -52,7 +52,7 @@ public class TournamentUI : ITournamentUI
                     break;
                 case '3':
                     Console.Clear();
-                    AnsiConsole.MarkupLine("[yellow]Opción no implementada[/]");
+                    await ShowUpdateTournament();
                     break;
                 case '4':
                     Console.WriteLine("Regresando al menu principal...");
@@ -193,6 +193,13 @@ public class TournamentUI : ITournamentUI
             .Centered()
             .Color(Color.Yellow));
 
+        var tournaments = await _tournamentService.GetAllTournamentsAsync();
+
+        foreach (var tournament in tournaments)
+        {
+            AnsiConsole.MarkupLine($"[blue]{tournament.Id}[/] - [green]{tournament.Name}[/]");
+        }
+
         var id = AnsiConsole.Ask<int>("[blue]ID del torneo:[/]");
 
         try
@@ -211,6 +218,35 @@ public class TournamentUI : ITournamentUI
 
     public async Task ShowUpdateTournament()
     {
-        throw new NotImplementedException();
+        AnsiConsole.Write(
+            new FigletText("Actualizar Torneo")
+            .Centered()
+            .Color(Color.Yellow));
+
+        var tournaments = await _tournamentService.GetAllTournamentsAsync();
+        foreach (var t in tournaments)
+        {
+            AnsiConsole.MarkupLine($"[blue]{t.Id}[/] - [green]{t.Name}[/]");
+        }
+
+        var id = AnsiConsole.Ask<int>("[blue]ID del torneo:[/]");
+        var name = AnsiConsole.Ask<string>("[blue]Nombre del torneo:[/]");
+        var startDate = AnsiConsole.Ask<DateTime>("[blue]Fecha de inicio:[/]");
+        var endDate = AnsiConsole.Ask<DateTime>("[blue]Fecha de fin:[/]");
+        var tournament = new Tournament(name, startDate, endDate);
+        tournament.Id = id;
+        
+        try
+        {
+            await _tournamentService.UpdateTournamentAsync(tournament);
+            AnsiConsole.MarkupLine("[green]Torneo actualizado correctamente[/]");
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Error al actualizar el torneo: {ex.Message}[/]");
+        }
+
+        AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+        Console.ReadKey();
     }
 }
