@@ -48,7 +48,7 @@ public class TournamentUI : ITournamentUI
                     break;
                 case '2':
                     Console.Clear();
-                    AnsiConsole.MarkupLine("[yellow]Opción no implementada[/]");
+                    await ShowDeleteTournament();
                     break;
                 case '3':
                     Console.Clear();
@@ -122,6 +122,8 @@ public class TournamentUI : ITournamentUI
                         if (tournament == null)
                         {
                             AnsiConsole.MarkupLine("[red]Torneo no encontrado[/]");
+                            AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+                            Console.ReadKey();
                             break;
                         }
 
@@ -139,6 +141,8 @@ public class TournamentUI : ITournamentUI
                     catch (Exception ex)
                     {
                         AnsiConsole.MarkupLine($"[red]Error al buscar el torneo: {ex.Message}[/]");
+                        AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+                        Console.ReadKey();
                     }
                     break;
                 case '2':
@@ -149,6 +153,8 @@ public class TournamentUI : ITournamentUI
                         if (tournaments.Count() == 0)
                         {
                             AnsiConsole.MarkupLine("[red]No hay torneos registrados[/]");
+                            AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+                            Console.ReadKey();
                             break;
                         }
 
@@ -170,6 +176,8 @@ public class TournamentUI : ITournamentUI
                     catch (Exception ex)
                     {
                         AnsiConsole.MarkupLine($"[red]Error al mostrar la lista de torneos: {ex.Message}[/]");
+                        AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+                        Console.ReadKey();
                     }
                     break;
                 case '3':
@@ -180,7 +188,25 @@ public class TournamentUI : ITournamentUI
 
     public async Task ShowDeleteTournament()
     {
-        throw new NotImplementedException();
+        AnsiConsole.Write(
+            new FigletText("Eliminar Torneo")
+            .Centered()
+            .Color(Color.Yellow));
+
+        var id = AnsiConsole.Ask<int>("[blue]ID del torneo:[/]");
+
+        try
+        {
+            await _tournamentService.DeleteTournamentAsync(id);
+            AnsiConsole.MarkupLine("[green]Torneo eliminado correctamente[/]");
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Error al eliminar el torneo: {ex.Message}[/]");
+        }
+
+        AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+        Console.ReadKey();
     }
 
     public async Task ShowUpdateTournament()
