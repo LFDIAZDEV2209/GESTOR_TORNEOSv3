@@ -175,7 +175,65 @@ public class TeamUI : ITeamUI
 
     public async Task ShowUpdateTeam()
     {
-        AnsiConsole.MarkupLine("[yellow]Funcionalidad en desarrollo[/]");
+        Console.Clear();
+
+        AnsiConsole.Write(
+            new FigletText("Actualizar Equipo")
+            .Centered()
+            .Color(Color.Yellow)
+        );
+
+        var teams = await _teamService.GetAllTeamsAsync();
+
+        if (!teams.Any())
+        {
+            AnsiConsole.MarkupLine("[red]No hay equipos disponibles. Debe registrar equipos primero.[/]");
+            AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+            Console.ReadKey();
+            return;
+        }
+
+        var teamChoices = teams.Select(t => $"{t.Id} - {t.Name}").ToArray();
+
+        var selectedTeamOption = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+            .Title("[bold green]Seleccione el equipo a actualizar:[/]")
+            .AddChoices(teamChoices)
+        );
+
+        var selectedTeamId = int.Parse(selectedTeamOption.Split('-')[0].Trim());
+
+        var team = teams.FirstOrDefault(t => t.Id == selectedTeamId);
+
+        if (team == null)
+        {
+            AnsiConsole.MarkupLine("[red]Equipo no encontrado.[/]");
+            AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+            Console.ReadKey();
+            return;
+        }
+
+        var newName = AnsiConsole.Ask<string>("[bold green]Nuevo nombre del equipo:[/]");
+
+        var cities = await _teamService.GetAllCitiesAsync();
+
+        var cityChoices = cities.Select(c => $"{c.Id} - {c.Name}").ToArray();
+
+        var selectedCityOption = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+            .Title("[bold green]Seleccione la ciudad del equipo:[/]")
+            .AddChoices(cityChoices)
+        );
+
+        var cityId = int.Parse(selectedCityOption.Split('-')[0].Trim());
+
+        team.Name = newName;
+        team.CityId = cityId;
+
+        await _teamService.UpdateTeamAsync(team);
+
+        AnsiConsole.MarkupLine("[green]Equipo actualizado correctamente[/]");
+
         AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
         Console.ReadKey();
     }
