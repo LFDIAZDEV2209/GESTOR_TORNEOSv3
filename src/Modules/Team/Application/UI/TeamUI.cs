@@ -288,9 +288,83 @@ public class TeamUI : ITeamUI
 
     public async Task ShowListTeams()
     {
-        AnsiConsole.MarkupLine("[yellow]Funcionalidad en desarrollo[/]");
-        AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
-        Console.ReadKey();
+        while (true)
+        {
+            Console.Clear();
+
+            AnsiConsole.Write(
+                new FigletText("Buscar Equipos")
+                .Centered()
+                .Color(Color.Yellow)
+            );
+
+            var selection = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                .Title("[bold green]Como desea buscar los equipos?[/]")
+                .AddChoices(new[]
+                {
+                    "0. Por ID",
+                    "1. Mostrar todos",
+                    "2. Salir"
+                }));
+
+            switch (selection[0])
+            {
+                case '0':
+                    var id = AnsiConsole.Ask<int>("[bold green]Ingrese el ID del equipo:[/]");
+                    var team = await _teamService.GetTeamByIdAsync(id);
+                    if (team == null)
+                    {
+                        AnsiConsole.MarkupLine("[red]Equipo no encontrado.[/]");
+                        AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+                        Console.ReadKey();
+                        return;
+                    }
+
+                    var table = new Table();
+                    table.AddColumn("ID");
+                    table.AddColumn("Nombre");
+                    table.AddColumn("Ciudad");
+                    table.AddRow(team.Id.ToString(), team.Name, team.City?.Name ?? "Sin ciudad");
+                    
+                    AnsiConsole.Write(table);
+
+                    AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+                    Console.ReadKey();
+                    break;
+                case '1':
+                    Console.Clear();
+
+                    AnsiConsole.Write(
+                        new FigletText("Todos los Equipos")
+                        .Centered()
+                        .Color(Color.Yellow)
+                    );
+
+                    var teams = await _teamService.GetAllTeamsAsync();
+                    
+                    var teamTable = new Table();
+                    teamTable.AddColumn("ID");
+                    teamTable.AddColumn("Nombre");
+                    teamTable.AddColumn("Ciudad");
+                    
+                    foreach (var t in teams)
+                    {
+                        teamTable.AddRow(t.Id.ToString(), t.Name, t.City?.Name ?? "Sin ciudad");
+                    }
+
+                    AnsiConsole.Write(teamTable);
+
+                    AnsiConsole.MarkupLine("[yellow]Presione cualquier tecla para continuar[/]");
+                    Console.ReadKey();
+                    break;
+                case '2':
+                    return;
+                default:
+                    AnsiConsole.MarkupLine("[red]Opción no válida[/]");
+                    break;
+            }
+        }
     }
 
     public async Task ShowInscribeTeam()

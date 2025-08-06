@@ -58,7 +58,7 @@ public class MainMenu
                     "5. Gestión de Partidos",
                     "6. Gestión de Estadísticas",
                     "7. Gestión de Transferencias (Compra, Préstamo)",
-                    "6. Salir"
+                    "8. Salir"
                 }));
 
             switch (selection[0])

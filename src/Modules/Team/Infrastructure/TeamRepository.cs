@@ -25,9 +25,13 @@ public class TeamRepository : ITeamRepository
             _context.Teams.Remove(team);
     }
 
-    public async Task<Team> GetTeamById(int id) => await _context.Teams.FindAsync(id);
+    public async Task<Team> GetTeamById(int id) => await _context.Teams
+        .Include(t => t.City)
+        .FirstOrDefaultAsync(t => t.Id == id);
 
-    public async Task<IEnumerable<Team>> GetAllTeams() => await _context.Teams.ToListAsync();
+    public async Task<IEnumerable<Team>> GetAllTeams() => await _context.Teams
+        .Include(t => t.City)
+        .ToListAsync();
 
     public void InscribeTeam(TournamentTeam tournamentTeam) => _context.TournamentTeams.Add(tournamentTeam);
 
